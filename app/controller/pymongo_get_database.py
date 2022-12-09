@@ -1,4 +1,7 @@
-from pymongo import MongoClient
+from pymongo import (
+    MongoClient,
+    errors
+)
 
 
 def main():
@@ -10,26 +13,47 @@ def main():
 
     print(db)
 
-    for x in test_collection.find(): #Stampa tutti i processori inseriti
+    #''' Per inserire:
+    example = {
+        "_id" : "i5-11600",
+        "name" : "core",
+        "brand" : "intel",
+        "n_core" : 6,
+        "freq_turbo" : 4.8,
+        "freq_base" : 2.8,
+        "cache" : "12MB",
+        "price" : 205,
+    }
+
+    try:
+        test_collection.insert_one(example)
+    except errors.DuplicateKeyError as e:
+        print("Duplicate Key Error - document is probably already inserted")
+    
+    #''' 
+
+    #for x in test_collection.find(): #Stampa tutti i processori inseriti
+    #   print(x)
+
+    # Fai una query: trova i processori della marca amd
+    cursor = db.processor.find({"brand": "amd"})
+
+    for x in cursor:
         print(x)
     
+    # Eliminare un document dal db:
+    #db.processor.delete_one({"brand" : "intel"})
+    
+    print("\n====================\n")
+
+    cursor = db.processor.find(); # Query che ritorna tutti i processori
+    for x in cursor: 
+        print(x)
+
     client.close()
 
 
-    ''' Per inserire:
-    example = {
-        "_id" : "000001",
-        "item_name" : "i5",
-        "brand" : "intel",
-        "num" : "11600",
-        "n_core" : 6,
-        "freq_turbo" : 4.80,
-        "freq_base" : 2.80,
-        "cache" : "12MB"  
-    }
-
-    test_collection.insert_one(example)
-    ''' 
+    
 
 
     
