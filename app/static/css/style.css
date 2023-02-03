@@ -1,5 +1,4 @@
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
     outline: 0;
@@ -16,7 +15,7 @@
   body {
     font-family: 'Open Sans', sans-serif;
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
     background: #f2f2f2;
   }
@@ -78,15 +77,14 @@
     float: left;
   }
 
-  .grid-container {
-    display: grid;
-    place-items: center;
+  .flex-main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 20vh;
     width: 100vw;
-    height: 25%;
-    position: relative;
     left: 0;
     text-align: center;
-    color: var(--color-light);
+    justify-content: space-between;
   }
 
   .flexbox-container {
@@ -94,7 +92,7 @@
     display: flex;
     float: left;
     width: 100%;
-    height: 50%;
+    height: auto;
   }
 
 
@@ -103,4 +101,28 @@
     background-color: black;
     color: white;
     font-size: 75px;
+  }
+
+  /* ========== FOOTER ========== */
+
+  .footer {
+    grid-area: footer;
+    background-color: black;
+    color: white;
+    font-size: 9px;
+    height: auto;
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+
+  }
+
+
+  /* ========== BOTTONE CONFIGURA IL TUO PC ============== */
+  #pc-configuration {
+    color: black;
+    font-size: 30px;
+    background-color: white;
+    border: 3px solid #00B4CC;
   }
