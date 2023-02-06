@@ -1,12 +1,48 @@
 <html>
    <head>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.js"></script>
       <script type = "text/javascript" src = "{{ url_for('static', filename = 'hello.js') }}" ></script>
          <link rel="stylesheet" href="/static/css/style.css">
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+      <script>
+
+         jQuery(document).ready(function(){
+            var availableTags = [
+      "ActionScript",
+      "AppleScript",
+      "Asp",
+      "BASIC",
+      "C",
+      "C++",
+      "Clojure",
+      "COBOL",
+      "ColdFusion",
+      "Erlang",
+      "Fortran",
+      "Groovy",
+      "Haskell",
+      "Java",
+      "JavaScript",
+      "Lisp",
+      "Perl",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Scala",
+      "Scheme"
+    ];
+    $( "#search" ).autocomplete({source: availableTags});
+         });
+
+      </script>
    </head>
    
    <body>
+      
       <div class="flex-main-container">
 
          <div class="container">
@@ -16,21 +52,19 @@
          <div class="flexbox-container">
             <div class="flex-container">
 
-
                <div class="dropdown">
                   <h1 class="dropdowntn">Menu</h1>
                   <div class="dropdownbn">
                      <a href="#">Chi siamo</a>
                      <a href="#">Contatti</a>
-                  </div> 
+                  </div>
                </div>
 
             </div>
 
-
             <div class="wrap">
                <div class="search">
-                  <input type="text" class="searchTerm" placeholder="Ricerca componenti">
+                  <input type="text" id="search" class="searchTerm" placeholder="Ricerca componenti">
                   <button type="submit" class="searchButton">
                   <i class="fa fa-search"></i>
                </button>
@@ -45,14 +79,14 @@
          <div class="container">
             <h1><a href="/pc-configuration" id="pc-configuration">Configura il tuo PC</a></h1>
          </div>
-        
-         
+                 
          <footer class="footer">
             <div class="container">
                <h1>PC Builder</h1>
             </div>
          </footer>
       </div>
+
 
    </body>
 </html>
