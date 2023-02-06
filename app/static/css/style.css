@@ -9,7 +9,7 @@
   
   a {
     color: white;
-    font-size: 0.9rem;
+    font-size: 1.3rem;
   }
   
   body {
@@ -109,7 +109,7 @@
     grid-area: footer;
     background-color: black;
     color: white;
-    font-size: 9px;
+    font-size: 10px;
     height: auto;
     position:absolute;
     bottom:0;
@@ -126,3 +126,36 @@
     background-color: white;
     border: 3px solid #00B4CC;
   }
+
+  /* ========== MENU DROPDOWN ================== */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    height: auto;
+  }
+
+  .dropdowntn {
+    background-color: black;
+    color: white;
+    padding: 8px;
+    font-size: 30px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .dropdownbn {
+    background-color: black;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 98px;
+  }
+
+  .dropdown:hover .dropdownbn {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    background-color: black;
+  }
+
+  
