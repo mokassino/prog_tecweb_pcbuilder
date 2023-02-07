@@ -3,9 +3,11 @@ from flask import (
    render_template,
    Blueprint
 )
+
 #app = Flask(__name__)
 
 bp = Blueprint('main',__name__)
+api_bp = Blueprint('api', __name__)
 
 @bp.route("/")
 def index():

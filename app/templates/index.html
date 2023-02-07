@@ -35,10 +35,29 @@
       "Scala",
       "Scheme"
     ];
-    $( "#search" ).autocomplete({source: availableTags});
-         });
 
-      </script>
+    $("#search").autocomplete(
+            {
+               source: function( request, response ){
+                  $.ajax(
+                     {
+                        type: "GET",
+                        url: "http://localhost:5000/api/hello",
+                        dataType : 'jsonp',
+                        data: {data : response},
+                        success: function(data){
+                           alert(data);
+                        }
+                     }
+
+                  );
+               }
+            }
+    );
+      });
+
+   </script>
+
    </head>
    
    <body>

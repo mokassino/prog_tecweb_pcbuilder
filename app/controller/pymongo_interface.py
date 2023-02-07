@@ -9,6 +9,8 @@ class PymongoInterface:
         self.client = MongoClient(string)
     def get_db(self):
         return self.client.pcbuilder
+    def get_processors(self):
+        return self.client.pcbuilder.processor
     def close(self):
         self.client.close()
 
