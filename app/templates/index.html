@@ -39,19 +39,22 @@
     $("#search").autocomplete(
             {
                source: function( request, response ){
-                  $.ajax(
-                     {
-                        type: "GET",
-                        url: "http://localhost:5000/api/hello",
-                        dataType : 'jsonp',
-                        data: {data : response},
-                        success: function(data){
-                           alert(data);
-                        }
+                  $.ajax({
+                     url: "http://localhost:5000/api/search",
+                     dataType: "json",
+                     data: {
+                        q: request.term
+                     },
+                     success: function( data ) {
+                        response($.map(data, function(v,i){
+                           return v.brand + " " + v._id 
+                        }));
                      }
+                  })
 
-                  );
-               }
+               },
+               minLength: 3,
+               maxLength: 3
             }
     );
       });

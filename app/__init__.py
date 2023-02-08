@@ -16,8 +16,7 @@ def create_app():
 
     return app
 
-
-class HelloWorld(Resource):
+class SearchBar(Resource):
     def get(self):
         CONNECTION_STRING = "mongodb+srv://pcbuilder:pcbuilder@pcbuilder.pbtoqu6.mongodb.net/?retryWrites=true&w=majority"
         processors = pymongo_interface.PymongoInterface(CONNECTION_STRING).get_processors()
@@ -26,4 +25,12 @@ class HelloWorld(Resource):
         
         return l
 
+class HelloWorld(Resource):
+    def __init__(self):
+        self.CONNECTION_STRING = "mongodb+srv://pcbuilder:pcbuilder@pcbuilder.pbtoqu6.mongodb.net/?retryWrites=true&w=majority"
+    def get(self):
+        print(self.CONNECTION_STRING)
+        return {'hello' : 'world'}
+
+api.add_resource(SearchBar, '/api/search')
 api.add_resource(HelloWorld, '/api/hello')
