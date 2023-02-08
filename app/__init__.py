@@ -18,16 +18,13 @@ def create_app():
 
 class SearchBar(Resource):
     def get(self):
+        args = request.args
+        q = args['q'] # bad security practice here, everything could go in args, it's better to parse with marshmallow
+
         CONNECTION_STRING = "mongodb+srv://pcbuilder:pcbuilder@pcbuilder.pbtoqu6.mongodb.net/?retryWrites=true&w=majority"
-        l = pymongo_interface.SearchBarInterface(CONNECTION_STRING).get_processors()
-
-        q = request.args['q']
-
-        ll = list(filter( lambda i : args['q'] in i   ,l)) # filter for elements that match the request arguments
-        #i.e if q='amd ryzen', shows only amd ryzen elements
-        # NOTE this filter stuff must be put into pymongo_interface
+        l = pymongo_interface.SearchBarInterface(CONNECTION_STRING).get_processors(q)
         
-        return ll
+        return l
 
 class HelloWorld(Resource):
     def __init__(self):
