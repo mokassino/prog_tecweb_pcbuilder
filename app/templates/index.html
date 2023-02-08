@@ -11,34 +11,10 @@
       <script>
 
          jQuery(document).ready(function(){
-            var availableTags = [
-      "ActionScript",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
-
-    $("#search").autocomplete(
+            $("#search").autocomplete(
             {
                source: function( request, response ){
+
                   $.ajax({
                      url: "http://localhost:5000/api/search",
                      dataType: "json",
@@ -46,15 +22,11 @@
                         q: request.term
                      },
                      success: function( data ) {
-                        response($.map(data, function(v,i){
-                           return v.brand + " " + v._id 
-                        }));
+                        response(data);
                      }
                   })
 
                },
-               minLength: 3,
-               maxLength: 3
             }
     );
       });

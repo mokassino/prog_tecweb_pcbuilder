@@ -1,5 +1,5 @@
 from flask import Flask, Blueprint
-from flask_restful import Resource,Api
+from flask_restful import Resource,Api, request
 from app.controller import (
         main,
         pymongo_interface
@@ -19,11 +19,15 @@ def create_app():
 class SearchBar(Resource):
     def get(self):
         CONNECTION_STRING = "mongodb+srv://pcbuilder:pcbuilder@pcbuilder.pbtoqu6.mongodb.net/?retryWrites=true&w=majority"
-        processors = pymongo_interface.PymongoInterface(CONNECTION_STRING).get_processors()
+        l = pymongo_interface.SearchBarInterface(CONNECTION_STRING).get_processors()
 
-        l = list(processors.find())
+        q = request.args['q']
+
+        ll = list(filter( lambda i : args['q'] in i   ,l)) # filter for elements that match the request arguments
+        #i.e if q='amd ryzen', shows only amd ryzen elements
+        # NOTE this filter stuff must be put into pymongo_interface
         
-        return l
+        return ll
 
 class HelloWorld(Resource):
     def __init__(self):
