@@ -22,7 +22,7 @@ class SearchBar(Resource):
         q = args['q'] # bad security practice here, everything could go in args, it's better to parse with marshmallow
 
         CONNECTION_STRING = "mongodb+srv://pcbuilder:pcbuilder@pcbuilder.pbtoqu6.mongodb.net/?retryWrites=true&w=majority"
-        l = pymongo_interface.SearchBarInterface(CONNECTION_STRING).get_processors(q)
+        l = pymongo_interface.SearchBarInterface(CONNECTION_STRING).get_everything(q)
         
         return l
 
