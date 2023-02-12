@@ -4,6 +4,8 @@ from flask import (
    Blueprint
 )
 
+from app.controller.pymongo_interface import SearchBarInterface
+
 #app = Flask(__name__)
 
 bp = Blueprint('main',__name__)
@@ -11,7 +13,10 @@ api_bp = Blueprint('api', __name__)
 
 @bp.route("/")
 def index():
-   return render_template("index.html")
+   i = SearchBarInterface("mongodb+srv://pcbuilder:pcbuilder@pcbuilder.pbtoqu6.mongodb.net/?retryWrites=true&w=majority")
+   query = i.get_everything()
+
+   return render_template("index.html", data=query)
 
 @bp.route("/pc-configuration")
 def pc_configuration():

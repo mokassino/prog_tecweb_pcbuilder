@@ -31,7 +31,7 @@ class SearchBarInterface(PymongoInterface): #sub class of PymongoInterface
         return self.searchbar_filter(l, q)
     
     def searchbar_filter(self, input, q):
-        if (q != None or q != '') and len(input) > 0:
+        if (q is type("string")) and len(input) > 0:
             ll = list(filter( lambda i : q in i  ,input))
             # filter for elements that match the request arguments
             #i.e if q='amd ryzen', shows only amd ryzen cpu 

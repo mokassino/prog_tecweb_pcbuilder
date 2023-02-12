@@ -45,7 +45,6 @@
 
          <div class="flexbox-container" >
             <div class="flex-container" >
-
                <div class="dropdown">
                   <h1 class="dropdowntn">Menu</h1>
                   <div class="dropdownbn">
@@ -75,6 +74,25 @@
 
          <div class="container">
             <h1><a href="/pc-configuration" id="pc-configuration">Configura il tuo PC</a></h1>
+         </div>
+         <div class="container">
+            <div class="mainframe">
+               <div class="filter">
+
+               </div>
+               <div class="flexbox-container">
+                  <div class="choosen-items">
+
+                  </div>
+                  <div class="result-query">
+                     {% for item in data %}
+                        <p> {{ item }} </p>
+                     {% endfor %}
+
+                  </div>
+               </div>
+
+            </div>
          </div>
                  
          <footer class="footer">
