@@ -3,35 +3,12 @@
       <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
       <script type = "text/javascript" src = "{{ url_for('static', filename = 'hello.js') }}" ></script>
          <link rel="stylesheet" href="/static/css/style.css">
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      <script>
-
-         jQuery(document).ready(function(){
-            $("#search").autocomplete(
-            {
-               source: function( request, response ){
-
-                  $.ajax({
-                     url: "http://localhost:5000/api/search",
-                     dataType: "json",
-                     data: {
-                        q: request.term
-                     },
-                     success: function( data ) {
-                        response(data);
-                     }
-                  })
-
-               },
-            }
-            );
-         });
-
-   </script>
 
    </head>
    
@@ -82,11 +59,14 @@
                </div>
                <div class="flexbox-container">
                   <div class="choosen-items">
-
+                     <p>La tua build:</p>
+                     <p id="Scheda Madre"></p>
+                     <p id="CPU"></p>
+                     <p id="GPU"></p>
                   </div>
                   <div class="result-query">
                      {% for item in data %}
-                        <p> {{ item }} </p>
+                        <p id="{{ item.name }}" type="{{ item.type }}" onclick="addItem(this)" class="result-query-item"> {{ item.name }}  --> {{ item.type }}</p>
                      {% endfor %}
 
                   </div>
@@ -103,5 +83,54 @@
       </div>
 
 
+      <script>
+         function addItem(data) {
+            type = data.attributes[1].nodeValue
+            name = data.id
+            Cookies.set(type, name)
+         }
+
+         document.addEventListener("DOMContentLoaded", () => {
+            //THIS CODE NEEDS REFACTORING
+            cpu = document.getElementById("CPU");
+            gpu = document.getElementById("GPU");
+            mb = document.getElementById("Scheda Madre");
+
+            t = Cookies.get(cpu.id);
+            
+            if(t){
+               cpu.innerHTML = t;
+            }
+
+            t = Cookies.get(gpu.id);
+            if (t) { gpu.innerHTML = t};
+            t = Cookies.get(mb.id);
+            if (t) {mb.innerHTML = t};
+
+         });
+
+         jQuery(document).ready(function(){
+            $("#search").autocomplete(
+            {
+               source: function( request, response ){
+
+                  $.ajax({
+                     url: "http://localhost:5000/api/search",
+                     dataType: "json",
+                     data: {
+                        q: request.term
+                     },
+                     success: function( data ) {
+                        response(data);
+                     }
+                  })
+
+               },
+            }
+            );
+         });
+         
+
+   </script>
    </body>
 </html>

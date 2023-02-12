@@ -199,7 +199,8 @@
   .choosen-items {
     width: 30vw;
     height: 58.5vh;
-    border: 3px solid violet
+    border: 3px solid violet;
+    color: black;
   }
 
   /* ================================================ */

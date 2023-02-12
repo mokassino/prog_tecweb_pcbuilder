@@ -13,8 +13,9 @@ api_bp = Blueprint('api', __name__)
 
 @bp.route("/")
 def index():
-   i = SearchBarInterface("mongodb+srv://pcbuilder:pcbuilder@pcbuilder.pbtoqu6.mongodb.net/?retryWrites=true&w=majority")
-   query = i.get_everything()
+   CONNECTION_STRING = "mongodb+srv://pcbuilderdev:pcbuilderdev@pcbuilder-cluster.2hbnofk.mongodb.net/?retryWrites=true&w=majority"
+   i = SearchBarInterface(CONNECTION_STRING)
+   query = i.get_everything_buf()
 
    return render_template("index.html", data=query)
 
