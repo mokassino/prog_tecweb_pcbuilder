@@ -25,6 +25,7 @@
   .search {
     width: 100%;
     display: flex;
+
   }
   
   .searchTerm {
@@ -32,25 +33,24 @@
     border: 3px solid #000000;
     border-right: none;
     padding: 24px;
-    height: 24px;
+    height: 7.6vh;
     outline: none;
     color: #9DBFAF;
     font-size: 20px;
   }
   
   .searchTerm:focus{
-    color: #00B4CC;
+    color: #cacaca;
   }
   
   .searchButton {
-    width: 40px;
-    height: 54px;
-    border: 1px solid #000000;
+    width: 50px;
+    height: 7.6vh;
     background: #000000;
     text-align: center;
     color: #fff;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 24px;
   }
   
   /*Resize the wrap to see the search bar change!*/
@@ -66,7 +66,6 @@
 
   .container {
     width: 100%;
-    margin: 0 auto;
   }
 
   .flex-container {
@@ -86,8 +85,7 @@
 
   .flexbox-container {
     display: flex;
-    float: left;
-    width: 100%;
+    width: 100vw;
     height: auto;
   }
 
@@ -174,6 +172,7 @@
     background-color: black;
     color: white;
     padding: 8px;
+    height: 5.5vh;
   }
 
   /* =================================== */
@@ -194,6 +193,29 @@
     height: 58.5vh;
     width: 69vw;
     float: right;
+    background-color: rgba(195, 195, 195, 0.491);
+  }
+
+  .result-query-item {
+    font-size: 18px;
+    padding: 1vh;
+  }
+
+  .result-query-table {
+    margin-left: auto;
+    margin-right: auto;
+    border: 3px solid black;
+    padding: 1vh;
+    width: 100%;
+  }
+
+
+  .result-query-item:hover {
+    background-color: rgb(195, 195, 195);
+  }
+
+  .result-query-table-row:hover {
+    background-color: rgb(195, 195, 195);;
   }
 
   .choosen-items {
@@ -201,6 +223,28 @@
     height: 58.5vh;
     border: 3px solid violet;
     color: black;
+    background-color: rgba(195, 195, 195, 0.491);
+    font-size: 18px;
+    text-align: left;
+    padding: 5px;
+  }
+
+  .choosen-item-single:hover {
+    background-color: rgb(195, 195, 195);;
+  }
+
+  .result-query-table-header {
+    color: white;
+    background-color: black;
+    text-align: left;
+    font-size: 20px;
   }
 
   /* ================================================ */
+
+  .remove {
+    text-align: center;
+  }
+  .remove:hover {
+    cursor: pointer;
+  }

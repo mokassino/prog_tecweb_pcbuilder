@@ -59,15 +59,48 @@
                </div>
                <div class="flexbox-container">
                   <div class="choosen-items">
-                     <p>La tua build:</p>
-                     <p id="Scheda Madre"></p>
-                     <p id="CPU"></p>
-                     <p id="GPU"></p>
+                     <table class="result-query-table">
+                        <tr class="result-query-table-header">
+                           <th  style="padding-bottom: 6px;text-align: center;">La tua build</th>
+                           <th>Prezzo</th>
+                           <th>Rimuovi</th>
+                        </tr>
+                         <tr>
+                           <td id="Scheda Madre" class="choosen-item-single"></td>
+                           <td id="Scheda Madre-price">€</td>
+                           <td id="Scheda Madre-remove" label="Scheda Madre" onclick="removeItem(this)" class="remove">x</td>
+                         </tr>
+                        <tr>
+                           <td id="CPU" class="choosen-item-single"></td>
+                           <td id="CPU-price">€</td>
+                           <td id="CPU-remove" label="CPU" onclick="removeItem(this)" class="remove">x</td>
+                        </tr>
+                        <tr>
+                           <td id="GPU" class="choosen-item-single"></td> 
+                           <td id="GPU-price">€</td>
+                           <td id="GPU-remove" label="GPU" onclick="removeItem(this)" class="remove">x</td>
+                        </tr>
+                     </table>
                   </div>
+
                   <div class="result-query">
-                     {% for item in data %}
-                        <p id="{{ item.name }}" type="{{ item.type }}" onclick="addItem(this)" class="result-query-item"> {{ item.name }}  --> {{ item.type }}</p>
-                     {% endfor %}
+                     <table class="result-query-table">
+                        <tr class="result-query-table-header">
+                           <th>Prodotto</th>
+                           <th>Tipo</th>
+                           <th>Prezzo</th>
+                        </tr>
+
+                        {% for item in data %}
+                        <tr class="result-query-table-row">
+                           <td id="{{ item.name }}" type="{{ item.type }}" onclick="addItem(this)" class="result-query-item"> {{ item.name }}</td>
+                           <td> {{ item.type }}</td>
+                           <td> €</td>
+                        </tr>
+                        {% endfor %}
+
+                     </table>
+                     
 
                   </div>
                </div>
@@ -85,9 +118,21 @@
 
       <script>
          function addItem(data) {
-            type = data.attributes[1].nodeValue
-            name = data.id
-            Cookies.set(type, name)
+            type = data.attributes[1].nodeValue;
+            name = data.id;
+            Cookies.set(type, name);
+            document.getElementById(type).innerHTML = name;
+         }
+
+         function removeItem(data){
+            id = data.attributes[1].nodeValue;
+            idp = id + "-price";
+            idr = id + "-remove";
+            Cookies.remove(id);
+            document.getElementById(id).innerHTML = "Scegli una " + id;
+            document.getElementById(idp).innerHTML = "€";
+
+
          }
 
          document.addEventListener("DOMContentLoaded", () => {
