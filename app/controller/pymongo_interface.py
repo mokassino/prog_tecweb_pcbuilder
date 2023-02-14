@@ -1,7 +1,8 @@
 from pymongo import (
     MongoClient,
-    errors
+    errors,
 )
+from pymongo import ASCENDING
 import json
 
 class PymongoInterface:
@@ -54,35 +55,16 @@ class SearchBarInterface(PymongoInterface): #sub class of PymongoInterface
         l = list(gpu + cpu + mb)
         return l
     
-    def get_everything_buf(self, q=None):
-        gpu = self.get_gpu(q)
-        cpu = self.get_cpu(q)
-        mb = self.get_motherboard(q)
-
-        gpu = list(map(lambda x : {"name" : x, "type" : "GPU"}, gpu))
-        cpu = list(map(lambda x : {"name" : x, "type" : "CPU"}, cpu))
-        mb = list(map(lambda x : {"name" : x, "type" : "Scheda Madre"}, mb))
-
-        '''
-        cpu = self.get_cpu(q)
-        for i in cpu:
-            i.type = "CPU"
-        
-        for i in mb:
-            i.type = "Scheda Madre"
-        
-        l = list(gpu+cpu+mb)
-        '''
-        return list(cpu+gpu+mb)
 
 class TableSearchInterface(PymongoInterface):
     def searchbar_query(self, collection, q):
         # We only need a few camps from the bson query result of 
         query = {}
         _filter = {'_id' : 1, 'price' : 1}
-        l = list(map(lambda e : { 'name' : e['_id'], 'price' : e['price']['$numberInt'] }, collection.find(query, _filter))) 
+        l = list(map(lambda e : { 'name' : e['_id'], 'price' : e['price']['$numberInt'] }, collection.find(query, _filter).sort("price", ASCENDING))) 
+        # the .sort() function in pymongo module sorts the list by price
+
         # print(collection.name)
-        print(l)
 
         return self.searchbar_filter(l, q)
     
@@ -120,4 +102,18 @@ class TableSearchInterface(PymongoInterface):
         mb = list(map(lambda x : {"name" : x["name"], "type" : "Scheda Madre",  "price" : x["price"]}, mb))
 
         return list(cpu+gpu+mb)
+
+class FilterTableSearchInterface(TableSearchInterface):
+    def filter(self, request_args):
+
+        keys = request_args.keys()
+        if 'part' in keys:
+            print(request_args['part'])
+        if 'priceMin' in keys:
+            print(request_args['priceMin'])
+        if 'priceMax' in keys:
+            print(request_args['priceMax'])
+        
+        l = self.get_everything_buf()
+        return l
 

@@ -55,7 +55,15 @@
          <div class="container">
             <div class="mainframe">
                <div class="filter">
-
+                  <p> Filtro </p>
+                  <select>
+                     <option value=" "></option>
+                     <option value="Scheda Madre">Scheda Madre</option>
+                     <option value="CPU">CPU</option>
+                     <option value="GPU">GPU</option>
+                  </select>
+                  <br>
+                  <a href="/" style="color: black" id="search-button">Cerca</a>
                </div>
                <div class="flexbox-container">
                   <div class="choosen-items">
@@ -145,7 +153,6 @@
             Cookies.remove(idp);
             document.getElementById(id).innerHTML = "Scegli una " + id;
             document.getElementById(idp).innerHTML = "€";
-
 
          }
 
