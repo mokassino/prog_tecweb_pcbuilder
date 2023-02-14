@@ -4,7 +4,7 @@ from flask import (
    Blueprint
 )
 
-from app.controller.pymongo_interface import SearchBarInterface
+from app.controller.pymongo_interface import TableSearchInterface
 
 #app = Flask(__name__)
 
@@ -14,7 +14,7 @@ api_bp = Blueprint('api', __name__)
 @bp.route("/")
 def index():
    CONNECTION_STRING = "mongodb+srv://pcbuilderdev:pcbuilderdev@pcbuilder-cluster.2hbnofk.mongodb.net/?retryWrites=true&w=majority"
-   i = SearchBarInterface(CONNECTION_STRING)
+   i = TableSearchInterface(CONNECTION_STRING)
    query = i.get_everything_buf()
 
    return render_template("index.html", data=query)

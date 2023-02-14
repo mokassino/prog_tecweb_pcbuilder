@@ -60,45 +60,51 @@
                <div class="flexbox-container">
                   <div class="choosen-items">
                      <table class="result-query-table">
+                        <thead>
                         <tr class="result-query-table-header">
                            <th  style="padding-bottom: 6px;text-align: center;">La tua build</th>
                            <th>Prezzo</th>
                            <th>Rimuovi</th>
                         </tr>
+                        </thead>
+                        <tbody>
                          <tr>
-                           <td id="Scheda Madre" class="choosen-item-single"></td>
+                           <td id="Scheda Madre" class="choosen-item-single">Scegli una Motherboard</td>
                            <td id="Scheda Madre-price">€</td>
                            <td id="Scheda Madre-remove" label="Scheda Madre" onclick="removeItem(this)" class="remove">x</td>
                          </tr>
                         <tr>
-                           <td id="CPU" class="choosen-item-single"></td>
+                           <td id="CPU" class="choosen-item-single">Scegli una CPU</td>
                            <td id="CPU-price">€</td>
                            <td id="CPU-remove" label="CPU" onclick="removeItem(this)" class="remove">x</td>
                         </tr>
                         <tr>
-                           <td id="GPU" class="choosen-item-single"></td> 
+                           <td id="GPU" class="choosen-item-single">Scegli una GPU</td> 
                            <td id="GPU-price">€</td>
                            <td id="GPU-remove" label="GPU" onclick="removeItem(this)" class="remove">x</td>
                         </tr>
+                     </tbody>
                      </table>
                   </div>
 
                   <div class="result-query">
                      <table class="result-query-table">
+                        <thead>
                         <tr class="result-query-table-header">
                            <th>Prodotto</th>
                            <th>Tipo</th>
                            <th>Prezzo</th>
                         </tr>
-
+                        </thead>
+                        <tbody>
                         {% for item in data %}
                         <tr class="result-query-table-row">
-                           <td id="{{ item.name }}" type="{{ item.type }}" onclick="addItem(this)" class="result-query-item"> {{ item.name }}</td>
+                           <td id="{{ item.name }}" type="{{ item.type }}" price="{{ item.price }}" onclick="addItem(this)" class="result-query-item"> {{ item.name }}</td>
                            <td> {{ item.type }}</td>
-                           <td> €</td>
+                           <td> {{ item.price }} €</td>
                         </tr>
                         {% endfor %}
-
+                        </tbody>
                      </table>
                      
 
@@ -118,10 +124,17 @@
 
       <script>
          function addItem(data) {
+            
             type = data.attributes[1].nodeValue;
+            price = data.attributes[2].nodeValue;
+            typeprice = type + "-price";
             name = data.id;
             Cookies.set(type, name);
+            Cookies.set(typeprice, price);
+            console.log(typeprice);
+
             document.getElementById(type).innerHTML = name;
+            document.getElementById(typeprice).innerHTML = price + " €";
          }
 
          function removeItem(data){
@@ -129,6 +142,7 @@
             idp = id + "-price";
             idr = id + "-remove";
             Cookies.remove(id);
+            Cookies.remove(idp);
             document.getElementById(id).innerHTML = "Scegli una " + id;
             document.getElementById(idp).innerHTML = "€";
 
@@ -136,21 +150,24 @@
          }
 
          document.addEventListener("DOMContentLoaded", () => {
-            //THIS CODE NEEDS REFACTORING
-            cpu = document.getElementById("CPU");
-            gpu = document.getElementById("GPU");
-            mb = document.getElementById("Scheda Madre");
+            var parts = ["CPU", "GPU", "Scheda Madre"];
+            for( i=0; i<3; i++){
+               part = document.getElementById(parts[i]);
+               key = parts[i] + "-price";
+               part_price = document.getElementById(key);
+               
 
-            t = Cookies.get(cpu.id);
-            
-            if(t){
-               cpu.innerHTML = t;
+               if ( part ){
+                  id = Cookies.get(parts[i]);
+                  if ( id != undefined){
+                     part.innerHTML = id;
+                  }
+                  price = Cookies.get(key);
+                  if ( price != undefined){
+                     part_price.innerHTML = price + " €";
+                  }
+               }
             }
-
-            t = Cookies.get(gpu.id);
-            if (t) { gpu.innerHTML = t};
-            t = Cookies.get(mb.id);
-            if (t) {mb.innerHTML = t};
 
          });
 

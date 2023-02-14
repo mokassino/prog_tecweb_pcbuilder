@@ -207,16 +207,10 @@
     border: 3px solid black;
     padding: 1vh;
     width: 100%;
+    border-collapse: collapse;
   }
 
-
-  .result-query-item:hover {
-    background-color: rgb(195, 195, 195);
-  }
-
-  .result-query-table-row:hover {
-    background-color: rgb(195, 195, 195);;
-  }
+  .result-query-table > tbody > tr:hover { background-color:  rgb(195, 195, 195); }
 
   .choosen-items {
     width: 30vw;

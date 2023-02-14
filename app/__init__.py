@@ -26,9 +26,4 @@ class SearchBar(Resource):
         
         return l
 
-class HelloWorld(Resource):
-    def get(self):
-        return {'hello' : 'world'}
-
 api.add_resource(SearchBar, '/api/search')
-api.add_resource(HelloWorld, '/api/hello')
