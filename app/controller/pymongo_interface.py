@@ -106,14 +106,22 @@ class TableSearchInterface(PymongoInterface):
 class FilterTableSearchInterface(TableSearchInterface):
     def filter(self, request_args):
 
+        l = self.get_everything_buf()
         keys = request_args.keys()
         if 'part' in keys:
             print(request_args['part'])
+            if request_args['part'] == "CPU":
+                l = self.get_cpu()
+            elif request_args['part'] == "GPU":
+                l = self.get_gpu()
+            elif request_args['part'] == "Scheda Madre":
+                l = self.get_motherboard()
+
         if 'priceMin' in keys:
             print(request_args['priceMin'])
         if 'priceMax' in keys:
             print(request_args['priceMax'])
         
-        l = self.get_everything_buf()
+
         return l
 

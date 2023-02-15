@@ -56,7 +56,7 @@
             <div class="mainframe">
                <div class="filter">
                   <p> Filtro </p>
-                  <select>
+                  <select onchange="changeUrl()" id="select-option">
                      <option value=" "></option>
                      <option value="Scheda Madre">Scheda Madre</option>
                      <option value="CPU">CPU</option>
@@ -131,6 +131,11 @@
 
 
       <script>
+         function changeUrl(){
+            let searchButton = document.getElementById("search-button");
+            searchButton.href = "/?part=" + $( "#select-option option:selected" ).text();
+         }
+
          function addItem(data) {
             
             type = data.attributes[1].nodeValue;
