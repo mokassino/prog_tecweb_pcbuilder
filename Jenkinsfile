@@ -17,11 +17,16 @@ pipeline {
             }
           
         }
-      stage('Build') {
-        withPythonEnv('/opt/venv/pcbuilder') {
-          sh "pip install -r requirements.txt"
-          flask run
+        stage('Build') {
+            withPythonEnv('/opt/venv/pcbuilder') {
+                echo "Installing python dependencies..."
+                sh "pip install -r requirements.txt"
+            }
         }
-      }
+        stage('Deploy'){
+            withPythonEnv('/opt/venv/pcbuilder'){
+                flask run
+            }
+        }
     }
 }
