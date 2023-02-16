@@ -56,14 +56,33 @@
             <div class="mainframe">
                <div class="filter">
                   <p> Filtro </p>
-                  <select onchange="changeUrl()" id="select-option">
-                     <option value=" "></option>
-                     <option value="Scheda Madre">Scheda Madre</option>
-                     <option value="CPU">CPU</option>
-                     <option value="GPU">GPU</option>
-                  </select>
-                  <br>
-                  <a href="/" style="color: black" id="search-button">Cerca</a>
+                  <div class="filter-inner">
+                     <div class="filter-inner-minmax"> 
+                        <p>Minimo</p>
+                        <input id="filter-min" type="text"> 
+                     </div>
+                     
+                     <div class="filter-inner-minmax"> 
+                        <p>Massimo</p> 
+                        <input id="filter-max" type="text">
+                     </div>
+
+                     <a class="filter-inner-searchb" href="/" onclick="changeUrl(this)" id="search-button">Cerca</a>
+
+                     <div class="filter-inner-select">
+                        <p>Componente</p>
+                        <select id="select-option">
+                           <option value=" "></option>
+                           <option value="Scheda Madre">Scheda Madre</option>
+                           <option value="CPU">CPU</option>
+                           <option value="GPU">GPU</option>
+                        </select>
+                     </div>
+
+                     <br>
+                     
+                  </div>
+
                </div>
                <div class="flexbox-container">
                   <div class="choosen-items">
@@ -131,9 +150,31 @@
 
 
       <script>
+         function showRangeValue(el) {
+            console.log(el);
+            let p = document.getElementById("range-value");
+            console.log(p);
+            p.innerHTML = el.value
+
+         }
          function changeUrl(){
+            let str = String("/?");
+            let min = document.getElementById("filter-min").value;
+            let max = document.getElementById("filter-max").value;
+            console.log("Min: " + min);
+            if ( max > 0){
+               str = str + "priceMax=" + max + "&";
+            }
+            if ( min > 0 ){
+               str = str + "priceMin=" + min + "&";
+            }
             let searchButton = document.getElementById("search-button");
-            searchButton.href = "/?part=" + $( "#select-option option:selected" ).text();
+            let selected = String($( "#select-option option:selected" ).text());
+            if (selected != '' ){
+               str = str + "part=" + selected;
+            }
+            console.log(str);
+            searchButton.href = str;
          }
 
          function addItem(data) {

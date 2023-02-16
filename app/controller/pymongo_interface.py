@@ -119,8 +119,12 @@ class FilterTableSearchInterface(TableSearchInterface):
 
         if 'priceMin' in keys:
             print(request_args['priceMin'])
+            if len(l) > 0:
+                l = list(filter(lambda e : e["price"] > request_args['priceMin'], l))
         if 'priceMax' in keys:
             print(request_args['priceMax'])
+            if len(l) > 0:
+                l = list(filter(lambda e : e["price"] < request_args['priceMax'], l))
         
 
         return l
