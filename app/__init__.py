@@ -21,17 +21,9 @@ class SearchBar(Resource):
         args = request.args
         q = args['q'] # bad security practice here, everything could go in args, it's better to parse with marshmallow
 
-        CONNECTION_STRING = "mongodb+srv://pcbuilder:pcbuilder@pcbuilder.pbtoqu6.mongodb.net/?retryWrites=true&w=majority"
+        CONNECTION_STRING = "mongodb+srv://pcbuilderdev:pcbuilderdev@pcbuilder-cluster.2hbnofk.mongodb.net/?retryWrites=true&w=majority"
         l = pymongo_interface.SearchBarInterface(CONNECTION_STRING).get_everything(q)
         
         return l
 
-class HelloWorld(Resource):
-    def __init__(self):
-        self.CONNECTION_STRING = "mongodb+srv://pcbuilder:pcbuilder@pcbuilder.pbtoqu6.mongodb.net/?retryWrites=true&w=majority"
-    def get(self):
-        print(self.CONNECTION_STRING)
-        return {'hello' : 'world'}
-
 api.add_resource(SearchBar, '/api/search')
-api.add_resource(HelloWorld, '/api/hello')

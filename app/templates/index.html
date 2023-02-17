@@ -3,35 +3,12 @@
       <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
       <script type = "text/javascript" src = "{{ url_for('static', filename = 'hello.js') }}" ></script>
          <link rel="stylesheet" href="/static/css/style.css">
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      <script>
-
-         jQuery(document).ready(function(){
-            $("#search").autocomplete(
-            {
-               source: function( request, response ){
-
-                  $.ajax({
-                     url: "http://localhost:5000/api/search",
-                     dataType: "json",
-                     data: {
-                        q: request.term
-                     },
-                     success: function( data ) {
-                        response(data);
-                     }
-                  })
-
-               },
-            }
-            );
-         });
-
-   </script>
 
    </head>
    
@@ -45,7 +22,6 @@
 
          <div class="flexbox-container" >
             <div class="flex-container" >
-
                <div class="dropdown">
                   <h1 class="dropdowntn">Menu</h1>
                   <div class="dropdownbn">
@@ -76,6 +52,94 @@
          <div class="container">
             <h1><a href="/pc-configuration" id="pc-configuration">Configura il tuo PC</a></h1>
          </div>
+         <div class="container">
+            <div class="mainframe">
+               <div class="filter">
+                  <p> Filtro </p>
+                  <div class="filter-inner">
+                     <div class="filter-inner-minmax"> 
+                        <p>Minimo</p>
+                        <input id="filter-min" type="text"> 
+                     </div>
+                     
+                     <div class="filter-inner-minmax"> 
+                        <p>Massimo</p> 
+                        <input id="filter-max" type="text">
+                     </div>
+
+                     <a class="filter-inner-searchb" href="/" onclick="changeUrl(this)" id="search-button">Cerca</a>
+
+                     <div class="filter-inner-select">
+                        <p>Componente</p>
+                        <select id="select-option">
+                           <option value=" "></option>
+                           <option value="Scheda Madre">Scheda Madre</option>
+                           <option value="CPU">CPU</option>
+                           <option value="GPU">GPU</option>
+                        </select>
+                     </div>
+
+                     <br>
+                     
+                  </div>
+
+               </div>
+               <div class="flexbox-container">
+                  <div class="choosen-items">
+                     <table class="result-query-table">
+                        <thead>
+                        <tr class="result-query-table-header">
+                           <th  style="padding-bottom: 6px;text-align: center;">La tua build</th>
+                           <th>Prezzo</th>
+                           <th>Rimuovi</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                         <tr>
+                           <td id="Scheda Madre" class="choosen-item-single">Scegli una Motherboard</td>
+                           <td id="Scheda Madre-price">€</td>
+                           <td id="Scheda Madre-remove" label="Scheda Madre" onclick="removeItem(this)" class="remove">x</td>
+                         </tr>
+                        <tr>
+                           <td id="CPU" class="choosen-item-single">Scegli una CPU</td>
+                           <td id="CPU-price">€</td>
+                           <td id="CPU-remove" label="CPU" onclick="removeItem(this)" class="remove">x</td>
+                        </tr>
+                        <tr>
+                           <td id="GPU" class="choosen-item-single">Scegli una GPU</td> 
+                           <td id="GPU-price">€</td>
+                           <td id="GPU-remove" label="GPU" onclick="removeItem(this)" class="remove">x</td>
+                        </tr>
+                     </tbody>
+                     </table>
+                  </div>
+
+                  <div class="result-query">
+                     <table class="result-query-table">
+                        <thead>
+                        <tr class="result-query-table-header">
+                           <th>Prodotto</th>
+                           <th>Tipo</th>
+                           <th>Prezzo</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in data %}
+                        <tr class="result-query-table-row">
+                           <td id="{{ item.name }}" type="{{ item.type }}" price="{{ item.price }}" onclick="addItem(this)" class="result-query-item"> {{ item.name }}</td>
+                           <td> {{ item.type }}</td>
+                           <td> {{ item.price }} €</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                     </table>
+                     
+
+                  </div>
+               </div>
+
+            </div>
+         </div>
                  
          <footer class="footer">
             <div class="container">
@@ -85,5 +149,103 @@
       </div>
 
 
+      <script>
+         function showRangeValue(el) {
+            console.log(el);
+            let p = document.getElementById("range-value");
+            console.log(p);
+            p.innerHTML = el.value
+
+         }
+         function changeUrl(){
+            let str = String("/?");
+            let min = document.getElementById("filter-min").value;
+            let max = document.getElementById("filter-max").value;
+            console.log("Min: " + min);
+            if ( max > 0){
+               str = str + "priceMax=" + max + "&";
+            }
+            if ( min > 0 ){
+               str = str + "priceMin=" + min + "&";
+            }
+            let searchButton = document.getElementById("search-button");
+            let selected = String($( "#select-option option:selected" ).text());
+            if (selected != '' ){
+               str = str + "part=" + selected;
+            }
+            console.log(str);
+            searchButton.href = str;
+         }
+
+         function addItem(data) {
+            
+            type = data.attributes[1].nodeValue;
+            price = data.attributes[2].nodeValue;
+            typeprice = type + "-price";
+            name = data.id;
+            Cookies.set(type, name);
+            Cookies.set(typeprice, price);
+            console.log(typeprice);
+
+            document.getElementById(type).innerHTML = name;
+            document.getElementById(typeprice).innerHTML = price + " €";
+         }
+
+         function removeItem(data){
+            id = data.attributes[1].nodeValue;
+            idp = id + "-price";
+            idr = id + "-remove";
+            Cookies.remove(id);
+            Cookies.remove(idp);
+            document.getElementById(id).innerHTML = "Scegli una " + id;
+            document.getElementById(idp).innerHTML = "€";
+
+         }
+
+         document.addEventListener("DOMContentLoaded", () => {
+            var parts = ["CPU", "GPU", "Scheda Madre"];
+            for( i=0; i<3; i++){
+               part = document.getElementById(parts[i]);
+               key = parts[i] + "-price";
+               part_price = document.getElementById(key);
+               
+
+               if ( part ){
+                  id = Cookies.get(parts[i]);
+                  if ( id != undefined){
+                     part.innerHTML = id;
+                  }
+                  price = Cookies.get(key);
+                  if ( price != undefined){
+                     part_price.innerHTML = price + " €";
+                  }
+               }
+            }
+
+         });
+
+         jQuery(document).ready(function(){
+            $("#search").autocomplete(
+            {
+               source: function( request, response ){
+
+                  $.ajax({
+                     url: "http://localhost:5000/api/search",
+                     dataType: "json",
+                     data: {
+                        q: request.term
+                     },
+                     success: function( data ) {
+                        response(data);
+                     }
+                  })
+
+               },
+            }
+            );
+         });
+         
+
+   </script>
    </body>
 </html>
