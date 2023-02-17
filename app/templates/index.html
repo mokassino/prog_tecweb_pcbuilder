@@ -8,8 +8,6 @@
          <link rel="stylesheet" href="/static/css/style.css">
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
    </head>
    
    <body>
@@ -43,7 +41,11 @@
 
             <div class="flex-container">
                <div class="login_button">
-                  <h1>Login</h1>
+               {% if is_authenticated == False %}
+                  <a href="/login"> <h1>Login </h1>  </a>
+               {% else %}
+                   <a href="/logout"> <h1>Logout</h1>  </a>
+               {% endif %}
                </div>
 
             </div>
@@ -76,6 +78,8 @@
                            <option value="Scheda Madre">Scheda Madre</option>
                            <option value="CPU">CPU</option>
                            <option value="GPU">GPU</option>
+                           <option value="RAM">RAM</option>
+                           <option value="SSD">SSD</option>
                         </select>
                      </div>
 
@@ -110,8 +114,27 @@
                            <td id="GPU-price">€</td>
                            <td id="GPU-remove" label="GPU" onclick="removeItem(this)" class="remove">x</td>
                         </tr>
+                        <tr>
+                           <td id="RAM" class="choosen-item-single">Scegli una RAM</td> 
+                           <td id="RAM-price">€</td>
+                           <td id="RAM-remove" label="RAM" onclick="removeItem(this)" class="remove">x</td>
+                        </tr>
+                        <tr>
+                           <td id="SSD" class="choosen-item-single">Scegli una SSD</td> 
+                           <td id="SSD-price">€</td>
+                           <td id="SSD-remove" label="SSD" onclick="removeItem(this)" class="remove">x</td>
+                        </tr>
                      </tbody>
                      </table>
+
+                     <br>
+                     {% if is_authenticated == False %}
+                     <h3>Effettua il login per salvare la build</h3>
+                     {% else %}
+
+                     <a href="/" onclick="saveBuild()" id="save-build">Salva build</a>
+
+                     {% endif %}
                   </div>
 
                   <div class="result-query">
@@ -203,7 +226,7 @@
          }
 
          document.addEventListener("DOMContentLoaded", () => {
-            var parts = ["CPU", "GPU", "Scheda Madre"];
+            var parts = ["CPU", "GPU", "Scheda Madre", "RAM", "SSD"];
             for( i=0; i<3; i++){
                part = document.getElementById(parts[i]);
                key = parts[i] + "-price";

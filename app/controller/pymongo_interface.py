@@ -34,6 +34,11 @@ class SearchBarInterface(PymongoInterface): #sub class of PymongoInterface
             return input
 
 
+    def get_ram(self, q=None):
+        collection = self.get_db().ram
+
+        return self.searchbar_query(collection, q)
+            
     def get_cpu(self, q=None): #q is an optional argument
         collection = self.get_db().cpu
 
@@ -46,13 +51,19 @@ class SearchBarInterface(PymongoInterface): #sub class of PymongoInterface
     def get_motherboard(self, q=None):
         collection = self.get_db().motherboard
         return self.searchbar_query(collection, q)
+
+    def get_ssd(self, q=None):
+        collection = self.get_db().ssd
+        return self.searchbar_query(collection, q)
     
     def get_everything(self, q=None):        
         gpu = self.get_gpu(q)
         cpu = self.get_cpu(q)
         mb = self.get_motherboard(q)
+        ram = self.get_ram(q)
+        ssd = self.get_ssd(q)
 
-        l = list(gpu + cpu + mb)
+        l = list(gpu + cpu + mb + ram + ssd)
         return l
     
 
@@ -61,6 +72,7 @@ class TableSearchInterface(PymongoInterface):
         # We only need a few camps from the bson query result of 
         query = {}
         _filter = {'_id' : 1, 'price' : 1}
+        print(collection)
         l = list(map(lambda e : { 'name' : e['_id'], 'price' : e['price']['$numberInt'] }, collection.find(query, _filter).sort("price", ASCENDING))) 
         # the .sort() function in pymongo module sorts the list by price
 
@@ -91,17 +103,31 @@ class TableSearchInterface(PymongoInterface):
         collection = self.get_db().motherboard
         return self.searchbar_query(collection, q)
     
+    def get_ram(self, q=None): #q is an optional argument
+        collection = self.get_db().ram
+
+        return self.searchbar_query(collection, q)
+
+    def get_ssd(self, q=None): #q is an optional argument
+        collection = self.get_db().ssd
+
+        return self.searchbar_query(collection, q)
+    
     def get_everything_buf(self, q=None):
         # REFACTORING REQUIRED !!
         gpu = self.get_gpu(q)
         cpu = self.get_cpu(q)
         mb = self.get_motherboard(q)
+        ram = self.get_ram(q)
+        ssd = self.get_ssd(q)
 
         gpu = list(map(lambda x : {"name" : x["name"], "type" : "GPU", "price" : x["price"]}, gpu))
         cpu = list(map(lambda x : {"name" : x["name"], "type" : "CPU",  "price" : x["price"]}, cpu))
         mb = list(map(lambda x : {"name" : x["name"], "type" : "Scheda Madre",  "price" : x["price"]}, mb))
+        ram = list(map(lambda x : {"name" : x["name"], "type" : "RAM",  "price" : x["price"]}, ram))
+        ssd = list(map(lambda x : {"name" : x["name"], "type" : "SSD",  "price" : x["price"]}, ssd))
 
-        return list(cpu+gpu+mb)
+        return list(cpu+gpu+mb+ram+ssd)
 
 class FilterTableSearchInterface(TableSearchInterface):
     def filter(self, request_args):
@@ -116,6 +142,10 @@ class FilterTableSearchInterface(TableSearchInterface):
                 l = self.get_gpu()
             elif request_args['part'] == "Scheda Madre":
                 l = self.get_motherboard()
+            elif request_args['part'] == "RAM":
+                l = self.get_ram()
+            elif request_args['part'] == "SSD":
+                l = self.get_ssd()
 
         if 'priceMin' in keys:
             print(request_args['priceMin'])
@@ -126,6 +156,5 @@ class FilterTableSearchInterface(TableSearchInterface):
             if len(l) > 0:
                 l = list(filter(lambda e : e["price"] < request_args['priceMax'], l))
         
-
         return l
 
