@@ -72,10 +72,8 @@ class TableSearchInterface(PymongoInterface):
         # We only need a few camps from the bson query result of 
         query = {}
         _filter = {'_id' : 1, 'price' : 1}
-        print(collection)
         l = list(map(lambda e : { 'name' : e['_id'], 'price' : e['price']['$numberInt'] }, collection.find(query, _filter).sort("price", ASCENDING))) 
         # the .sort() function in pymongo module sorts the list by price
-
         # print(collection.name)
 
         return self.searchbar_filter(l, q)

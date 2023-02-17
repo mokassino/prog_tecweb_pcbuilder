@@ -170,8 +170,7 @@ def callback():
     # Begin user session by logging the user in
 
     unique_id = userinfo_response.json()["sub"]    
-    t = login_user(user)
-    print(t)
+    login_user(user)
 
     # Send user back to homepage
     return redirect(url_for("index"))
