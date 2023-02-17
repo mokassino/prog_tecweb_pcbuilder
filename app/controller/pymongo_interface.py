@@ -47,7 +47,7 @@ class SearchBarInterface(PymongoInterface): #sub class of PymongoInterface
         collection = self.get_db().motherboard
         return self.searchbar_query(collection, q)
     
-    def get_everything(self, q=None):
+    def get_everything(self, q=None):        
         gpu = self.get_gpu(q)
         cpu = self.get_cpu(q)
         mb = self.get_motherboard(q)

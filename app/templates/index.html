@@ -230,12 +230,14 @@
                source: function( request, response ){
 
                   $.ajax({
-                     url: "http://localhost:5000/api/search",
+                     type: "GET",
+                     url: "/api/search",
                      dataType: "json",
                      data: {
                         q: request.term
                      },
                      success: function( data ) {
+                        console.log(data);
                         response(data);
                      }
                   })

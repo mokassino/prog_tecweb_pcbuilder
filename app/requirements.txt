@@ -1,4 +1,11 @@
 Flask
 pymongo 
 flask_restful
+requests
+Flask
+oauthlib
+pyOpenSSL
+Flask-Login
+flask-talisman
+
 
