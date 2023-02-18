@@ -25,6 +25,7 @@ from controller.user import User
 from flask_restful import Resource,Api, request
 from oauthlib.oauth2 import WebApplicationClient
 from flask_talisman import Talisman
+from hashlib import sha256
 
 
 GOOGLE_CLIENT_ID = "499806511986-9666ki8p6vjo8udjecn71qrt5c5oe9p1.apps.googleusercontent.com"
@@ -66,9 +67,31 @@ def index():
 
    return render_template("index.html", data=query, is_authenticated=j)
 
-@app.route("/pc-configuration")
+@app.route("/saved-builds")
+@login_required
 def pc_configuration():
-   return render_template("pc-configuration.html")
+    sbi = SaveBuildInterface(CONNECTION_STRING)
+    email = current_user.email
+
+    l = sbi.get_every_build_ref(email)
+
+    return render_template("pc-configuration.html", data=l)
+
+@app.route("/saved-builds/<build_id>")
+@login_required
+def saved_build_id(build_id): # render template with data for that build
+    sbi = SaveBuildInterface(CONNECTION_STRING)
+
+    # Get build by url with every date
+
+    # Pack every name into a dictionary
+
+    # For every value in the dictionary, create another dictionary 
+    # with additional values like price, url to amazon
+
+    return render_template("saved-build-id.html")
+
+
 
 
 class SearchBar(Resource):

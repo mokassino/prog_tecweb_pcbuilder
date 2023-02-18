@@ -3,6 +3,7 @@ from pymongo import (
     errors,
 )
 from pymongo import ASCENDING
+from hashlib import sha256
 import json
 
 class PymongoInterface:
@@ -164,29 +165,50 @@ class SaveBuildInterface(PymongoInterface):
         cllct = self.get_sb()
         sb = cllct.find(query)
         return list(sb)
+    def get_every_build_ref(self, email): #get every build name and url from an account
+        query = {"email" : email}
+        _filter = {"_id" : 0, "name" : 1, "url" : 1}
+        cllct = self.get_sb()
+        sb = cllct.find(query, _filter)
+
+        names = list()
+        urls = list()
+        for x in sb:
+            names.append(x['name'])
+            urls.append(x['url'])
+
+        sb = list(zip(names, urls))
+
+        return sb
 
     def save_build(self, build):
-        result = self.get_every_build(build["email"]) or {}
+        result = self.get_every_build(build["email"])
         save = False
         if isinstance(build, dict):
             doc = {
                 "email" : build["email"],
                 "name" : "build " + str(len(result)+1),
             }
+            url = doc["name"] + " " + doc["email"]
+            url = sha256(url.encode('utf-8')).hexdigest()[0:16]
+
+            doc = {**doc, **{"url" : url}}
             parts = ("Scheda Madre", "CPU", "GPU", "RAM", "SSD")
+
             for part in parts:
                 try:
                     doc = {**doc, **{part : build[part]}}
                 except KeyError as ke:
                     doc = {**doc, **{part : ""}}
      
+            save = True
             for build in result:
                 build.pop("_id")
+                build.pop("url")
+                print(build)
                 if build == doc:
                     print("Build already inserted!")
                     save = False
-                else:
-                    save = True
 
         if save == True:    
             self.get_sb().insert_one(doc)

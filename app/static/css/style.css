@@ -330,3 +330,26 @@
     padding-left: 1vw;
     padding-right: 1vw;
   }
+
+
+  /* ====================== SAVED BUILD ========================= */
+
+  #your-builds-header {
+    position: relative;
+    left:45%;
+    width: 10vw;
+    float: left;
+  }
+
+  .build-list {
+    position: relative;
+    width: 10vw;
+    height: 20vh;
+    margin-top: 10vh;
+    left: 35%;
+  }
+
+  .build-list-item {
+    position: relative;
+    margin-top: 5vh;
+  }

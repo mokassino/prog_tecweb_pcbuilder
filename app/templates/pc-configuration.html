@@ -14,7 +14,15 @@
             <h1 class="header"><a class="header" href="/">PC Builder</a></h1>
          </div>
 
-
+         <div class="flexbox-container">
+            <h1 id="your-builds-header">Le tue build</h1>
+            <br>
+            <div class="build-list">
+                {% for i in data %}
+                <div class="build-list-item"> <a style="color: black" href="/saved-builds/{{ i[1] }}"> <h2 id="{{ i[1] }}"> {{ i[0] }} </h2> </a> </div>
+                {% endfor %}
+            </div>
+         </div>
 
          <footer class="footer">
             <div class="container">
