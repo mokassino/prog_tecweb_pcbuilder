@@ -19,7 +19,7 @@ import requests
 import json
 import sqlite3
 import os
-from controller.pymongo_interface import SearchBarInterface, FilterTableSearchInterface
+from controller.pymongo_interface import SearchBarInterface, FilterTableSearchInterface, SaveBuildInterface
 import controller.db
 from controller.user import User
 from flask_restful import Resource,Api, request
@@ -180,6 +180,25 @@ def callback():
 @login_required
 def logout():
     logout_user()
+    return redirect(url_for("index"))
+
+@app.route("/save-build")
+@login_required
+def save_build():
+    # when an user click on "Salva build", the front-end sends to
+    # the back-end the items names contained in the choosen items table
+    # then this function contact the db and save these items and the email 
+    # associated to the user
+    email = current_user.email
+    args = request.args
+    keys = args.keys()
+    doc = {"email" : email}
+    for k in keys:
+        doc =  {**doc, **{k : args[k]} }
+
+    sbi = SaveBuildInterface(CONNECTION_STRING)
+    sbi.save_build(doc)
+
     return redirect(url_for("index"))
 
 

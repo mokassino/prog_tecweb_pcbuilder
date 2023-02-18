@@ -133,7 +133,6 @@ class FilterTableSearchInterface(TableSearchInterface):
         l = self.get_everything_buf()
         keys = request_args.keys()
         if 'part' in keys:
-            print(request_args['part'])
             if request_args['part'] == "CPU":
                 l = self.get_cpu()
             elif request_args['part'] == "GPU":
@@ -155,4 +154,41 @@ class FilterTableSearchInterface(TableSearchInterface):
                 l = list(filter(lambda e : e["price"] < request_args['priceMax'], l))
         
         return l
+
+class SaveBuildInterface(PymongoInterface):
+    def get_sb(self): # get saved builds
+        sb = self.get_db().saved_builds
+        return sb
+    def get_every_build(self, email):
+        query =  {"email" : email}
+        cllct = self.get_sb()
+        sb = cllct.find(query)
+        return list(sb)
+
+    def save_build(self, build):
+        result = self.get_every_build(build["email"]) or {}
+        save = False
+        if isinstance(build, dict):
+            doc = {
+                "email" : build["email"],
+                "name" : "build " + str(len(result)+1),
+            }
+            parts = ("Scheda Madre", "CPU", "GPU", "RAM", "SSD")
+            for part in parts:
+                try:
+                    doc = {**doc, **{part : build[part]}}
+                except KeyError as ke:
+                    doc = {**doc, **{part : ""}}
+     
+            for build in result:
+                build.pop("_id")
+                if build == doc:
+                    print("Build already inserted!")
+                    save = False
+                else:
+                    save = True
+
+        if save == True:    
+            self.get_sb().insert_one(doc)
+            
 
