@@ -83,13 +83,32 @@ def saved_build_id(build_id): # render template with data for that build
     sbi = SaveBuildInterface(CONNECTION_STRING)
 
     # Get build by url with every date
+    email = current_user.email
+    db = sbi.get_sb()
+    query = {"email" : email, "url" : build_id}
+    filter = {"_id" : 0, "email" : 0, "url" : 0}
 
-    # Pack every name into a dictionary
+    # Pack every name into a list
+    build = list(db.find(query, filter))
+    t = build[0]
+    t.pop("name")
+    print(t)
 
     # For every value in the dictionary, create another dictionary 
     # with additional values like price, url to amazon
+    db = sbi.get_db()
+    traduction = dict({"Scheda Madre" : "motherboard", "CPU" : "cpu", "GPU" : "gpu", "RAM" : "ram" , "SSD" : "ssd"})
 
-    return render_template("saved-build-id.html")
+    data = list()
+
+    for key in t.keys():
+        print(key)
+        part = db[traduction[key]].find({"_id" : t[key]})[0]
+        data.append({"part" : [part['_id'], part['price'], part['url']]})
+    print(data)
+
+
+    return render_template("saved-build-id.html", data=data)
 
 
 
