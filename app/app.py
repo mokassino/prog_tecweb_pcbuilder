@@ -20,17 +20,19 @@ import json
 import sqlite3
 import os
 from controller.pymongo_interface import SearchBarInterface, FilterTableSearchInterface, SaveBuildInterface
-import controller.db
 from controller.user import User
 from flask_restful import Resource,Api, request
 from oauthlib.oauth2 import WebApplicationClient
 from flask_talisman import Talisman
 from hashlib import sha256
+import yaml
 
 
-GOOGLE_CLIENT_ID = "499806511986-9666ki8p6vjo8udjecn71qrt5c5oe9p1.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET = "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"
-GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
+config = yaml.safe_load(open("config.yml"))
+GOOGLE_CLIENT_ID = config["google"]["GOOGLE_CLIENT_ID"]
+GOOGLE_CLIENT_SECRET = config["google"]["GOOGLE_CLIENT_SECRET"] #"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" 
+GOOGLE_DISCOVERY_URL = config["google"]["GOOGLE_DISCOVERY_URL"] #"https://accounts.google.com/.well-known/openid-configuration"
+CONNECTION_STRING = config["mongodb"]
 
 app = Flask(__name__, instance_relative_config=True)
     
@@ -44,16 +46,7 @@ api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
 app.register_blueprint(bp)
 app.register_blueprint(api_bp)
-app.secret_key = "secrete"
-
-CONNECTION_STRING = "mongodb+srv://pcbuilderdev:pcbuilderdev@pcbuilder-cluster.2hbnofk.mongodb.net/?retryWrites=true&w=majority"
-
-# Naive database setup
-try:
-    controller.db.init_db_command()
-except sqlite3.OperationalError:
-    # Assume it's already been created
-    pass
+app.secret_key = config["secret"]
 
 @app.route("/")
 def index():
@@ -167,7 +160,6 @@ def login():
 def callback():
     # Get authorization code Google sent back to you
     code = request.args.get("code")
-    print(code)
 
     google_provider_cfg = get_google_provider_cfg()
     token_endpoint = google_provider_cfg["token_endpoint"]
@@ -197,7 +189,6 @@ def callback():
     userinfo_response = requests.get(uri, headers=headers, data=body)
 
     result = token_response.text
-    print(result)
 
     # You want to make sure their email is verified.
     # The user authenticated with Google, authorized your
@@ -219,8 +210,7 @@ def callback():
         User.create(unique_id, users_name, users_email, picture)
 
     # Begin user session by logging the user in
-
-    unique_id = userinfo_response.json()["sub"]    
+    unique_id = userinfo_response.json()["sub"]
     login_user(user)
 
     # Send user back to homepage
@@ -252,6 +242,11 @@ def save_build():
 
     return redirect(url_for("index"))
 
+#def main():
+    #app.run(host="0.0.0.0", port=5000, ssl_context="adhoc")
+#    app.run(host="0.0.0.0", port=8000)
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, ssl_context="adhoc")
+
+#if __name__ == "__main__":
+#    main()
+
