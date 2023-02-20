@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <title>PC Builder</title>
+</head>
+<body>
+    <div class="flex-main-container">
+        <div class="container">
+            <h1 class="header"><a class="header" href="/">PC Builder</a></h1>
+         </div>
+
+         <table class="table-yourbuild">
+            <thead class="table-yourbuild-header">
+                <tr>
+                    <td></td>
+                    <td>Componente</td>
+                    <td>Prezzo €</td>
+                    <td>URL</td>
+                </tr>
+            </thead>
+            <tbody class="table-yourbuild-body">
+                {% for item in data %}
+                <tr>
+                    <td class="yourbuild-first-column"> {{ item["part"][0] }} </td>
+                    <td> {{ item["part"][1] }} </td>
+                    <td> {{ item["part"][2]["$numberInt"] }} </td>
+                    <td> <a style="color:black" href="{{ item['part'][3] }}" >  <i class="fa-brands fa-amazon"> </i></a> </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+         </table>
+
+         <div>
+            <a class="delete-build-button" href="/delete-build?q={{ url }}">Elimina build</a>
+         </div>
+
+         <footer class="footer">
+            <div class="container">
+               <h1>PC Builder</h1>
+            </div>
+         </footer>
+    </div>
+</body>
+</html>

@@ -8,8 +8,6 @@
          <link rel="stylesheet" href="/static/css/style.css">
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
    </head>
    
    <body>
@@ -43,27 +41,29 @@
 
             <div class="flex-container">
                <div class="login_button">
-                  <h1>Login</h1>
+               {% if is_authenticated == False %}
+                  <a href="/login"> <h1>Login </h1>  </a>
+               {% else %}
+                   <a href="/logout"> <h1>Logout</h1>  </a>
+               {% endif %}
                </div>
 
             </div>
          </div>
 
-         <div class="container">
-            <h1><a href="/pc-configuration" id="pc-configuration">Configura il tuo PC</a></h1>
-         </div>
+
          <div class="container">
             <div class="mainframe">
                <div class="filter">
                   <p> Filtro </p>
                   <div class="filter-inner">
                      <div class="filter-inner-minmax"> 
-                        <p>Minimo</p>
+                        <p>EUR Minimo</p>
                         <input id="filter-min" type="text"> 
                      </div>
                      
                      <div class="filter-inner-minmax"> 
-                        <p>Massimo</p> 
+                        <p>EUR Massimo</p> 
                         <input id="filter-max" type="text">
                      </div>
 
@@ -76,6 +76,8 @@
                            <option value="Scheda Madre">Scheda Madre</option>
                            <option value="CPU">CPU</option>
                            <option value="GPU">GPU</option>
+                           <option value="RAM">RAM</option>
+                           <option value="SSD">SSD</option>
                         </select>
                      </div>
 
@@ -89,9 +91,9 @@
                      <table class="result-query-table">
                         <thead>
                         <tr class="result-query-table-header">
-                           <th  style="padding-bottom: 6px;text-align: center;">La tua build</th>
-                           <th>Prezzo</th>
-                           <th>Rimuovi</th>
+                           <th style="padding-bottom: 6px;text-align: center;">La tua build</th>
+                           <th style="padding-bottom: 6px;text-align: center;">Prezzo</th>
+                           <th style="padding-bottom: 6px;text-align: center;">Rimuovi</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -110,8 +112,28 @@
                            <td id="GPU-price">€</td>
                            <td id="GPU-remove" label="GPU" onclick="removeItem(this)" class="remove">x</td>
                         </tr>
+                        <tr>
+                           <td id="RAM" class="choosen-item-single">Scegli una RAM</td> 
+                           <td id="RAM-price">€</td>
+                           <td id="RAM-remove" label="RAM" onclick="removeItem(this)" class="remove">x</td>
+                        </tr>
+                        <tr>
+                           <td id="SSD" class="choosen-item-single">Scegli una SSD</td> 
+                           <td id="SSD-price">€</td>
+                           <td id="SSD-remove" label="SSD" onclick="removeItem(this)" class="remove">x</td>
+                        </tr>
                      </tbody>
                      </table>
+
+                     <br>
+                     {% if is_authenticated == False %}
+                     <h3>Effettua il login per salvare la build</h3>
+                     {% else %}
+                    <div class="saved-builds-button">
+                     <a href="/save-build" onclick="saveBuild()" id="save-build">Salva build</a>
+                     <a href="/saved-builds">Le tue build</a>
+                    </div>
+                     {% endif %}
                   </div>
 
                   <div class="result-query">
@@ -133,7 +155,6 @@
                         {% endfor %}
                         </tbody>
                      </table>
-                     
 
                   </div>
                </div>
@@ -150,18 +171,28 @@
 
 
       <script>
-         function showRangeValue(el) {
-            console.log(el);
-            let p = document.getElementById("range-value");
-            console.log(p);
-            p.innerHTML = el.value
+         var parts = ["CPU", "GPU", "Scheda Madre", "RAM", "SSD"];
+         function saveBuild() {
+            href = "/save-build?"
+            // Given the array of components names
+            for( i=0; i<parts.length; i++){
+               part = document.getElementById(parts[i]); 
+               //Check if part stars with "Scegli una ..." 
+               c = part.innerHTML;
+               if (!c.startsWith("Scegli una")){
+                  href = href + parts[i] + "=" + c + "&" // build href
+               }
+            }
+
+            saveb = document.getElementById("save-build");
+            saveb.href = href;
 
          }
+
          function changeUrl(){
             let str = String("/?");
             let min = document.getElementById("filter-min").value;
             let max = document.getElementById("filter-max").value;
-            console.log("Min: " + min);
             if ( max > 0){
                str = str + "priceMax=" + max + "&";
             }
@@ -173,7 +204,6 @@
             if (selected != '' ){
                str = str + "part=" + selected;
             }
-            console.log(str);
             searchButton.href = str;
          }
 
@@ -185,7 +215,6 @@
             name = data.id;
             Cookies.set(type, name);
             Cookies.set(typeprice, price);
-            console.log(typeprice);
 
             document.getElementById(type).innerHTML = name;
             document.getElementById(typeprice).innerHTML = price + " €";
@@ -203,12 +232,10 @@
          }
 
          document.addEventListener("DOMContentLoaded", () => {
-            var parts = ["CPU", "GPU", "Scheda Madre"];
-            for( i=0; i<3; i++){
+            for( i=0; i<parts.length; i++){
                part = document.getElementById(parts[i]);
                key = parts[i] + "-price";
                part_price = document.getElementById(key);
-               
 
                if ( part ){
                   id = Cookies.get(parts[i]);
@@ -230,7 +257,8 @@
                source: function( request, response ){
 
                   $.ajax({
-                     url: "http://localhost:5000/api/search",
+                     type: "GET",
+                     url: "/api/search",
                      dataType: "json",
                      data: {
                         q: request.term
