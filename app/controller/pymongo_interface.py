@@ -212,5 +212,15 @@ class SaveBuildInterface(PymongoInterface):
 
         if save == True:    
             self.get_sb().insert_one(doc)
+
+    def delete_build(self, email,  url):
+        db = self.get_sb()
+
+        query = {"email" : email, "url" : url}
+        try:
+            db.delete_one(query)
+        except Exception as e:
+            print(e)
+
             
 

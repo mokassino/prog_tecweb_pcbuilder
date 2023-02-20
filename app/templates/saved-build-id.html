@@ -14,25 +14,30 @@
             <h1 class="header"><a class="header" href="/">PC Builder</a></h1>
          </div>
 
-         <table  class="result-query">
-            <thead>
+         <table class="table-yourbuild">
+            <thead class="table-yourbuild-header">
                 <tr>
+                    <td></td>
                     <td>Componente</td>
                     <td>Prezzo €</td>
                     <td>URL</td>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="table-yourbuild-body">
                 {% for item in data %}
                 <tr>
-                    <td> {{ item["part"][0] }} </td>
-                    <td> {{ item["part"][1]["$numberInt"] }} </td>
-                    <td> <a style="color:black" href="{{ item['part'][2] }}" >  <i class="fa-brands fa-amazon"> </i></a> </td>
+                    <td class="yourbuild-first-column"> {{ item["part"][0] }} </td>
+                    <td> {{ item["part"][1] }} </td>
+                    <td> {{ item["part"][2]["$numberInt"] }} </td>
+                    <td> <a style="color:black" href="{{ item['part'][3] }}" >  <i class="fa-brands fa-amazon"> </i></a> </td>
                 </tr>
                 {% endfor %}
-
             </tbody>
          </table>
+
+         <div>
+            <a class="delete-build-button" href="/delete-build?q={{ url }}">Elimina build</a>
+         </div>
 
          <footer class="footer">
             <div class="container">

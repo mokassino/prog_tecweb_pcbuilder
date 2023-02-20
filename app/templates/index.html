@@ -51,21 +51,19 @@
             </div>
          </div>
 
-         <div class="container">
-            <h1><a href="/pc-configuration" id="pc-configuration">Configura il tuo PC</a></h1>
-         </div>
+
          <div class="container">
             <div class="mainframe">
                <div class="filter">
                   <p> Filtro </p>
                   <div class="filter-inner">
                      <div class="filter-inner-minmax"> 
-                        <p>Minimo</p>
+                        <p>EUR Minimo</p>
                         <input id="filter-min" type="text"> 
                      </div>
                      
                      <div class="filter-inner-minmax"> 
-                        <p>Massimo</p> 
+                        <p>EUR Massimo</p> 
                         <input id="filter-max" type="text">
                      </div>
 
@@ -131,9 +129,10 @@
                      {% if is_authenticated == False %}
                      <h3>Effettua il login per salvare la build</h3>
                      {% else %}
-
+                    <div class="saved-builds-button">
                      <a href="/save-build" onclick="saveBuild()" id="save-build">Salva build</a>
-
+                     <a href="/saved-builds">Le tue build</a>
+                    </div>
                      {% endif %}
                   </div>
 

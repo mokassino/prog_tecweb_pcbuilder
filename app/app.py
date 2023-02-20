@@ -92,7 +92,6 @@ def saved_build_id(build_id): # render template with data for that build
     build = list(db.find(query, filter))
     t = build[0]
     t.pop("name")
-    print(t)
 
     # For every value in the dictionary, create another dictionary 
     # with additional values like price, url to amazon
@@ -101,17 +100,27 @@ def saved_build_id(build_id): # render template with data for that build
 
     data = list()
 
-    for key in t.keys():
-        print(key)
-        part = db[traduction[key]].find({"_id" : t[key]})[0]
-        data.append({"part" : [part['_id'], part['price'], part['url']]})
-    print(data)
+    for key in t.keys(): # for each part in the selected build
+        part = db[traduction[key]].find({"_id" : t[key]})
+        try:
+            part = part[0]
+            data.append({"part" : [key, part['_id'], part['price'], part['url']]})
+        except IndexError as e:
+            data.append({"part" : [key, '', '', '']})
 
+    return render_template("saved-build-id.html", data=data, url=build_id)
 
-    return render_template("saved-build-id.html", data=data)
+@app.route("/delete-build")
+@login_required
+def delete_saved_build():
+    args = request.args
+    if 'q' in args.keys():
+        print(args['q'])
+        sbi = SaveBuildInterface(CONNECTION_STRING)
+        sbi.delete_build(current_user.email, args['q'] )
+        sbi.close()
 
-
-
+    return redirect("/saved-builds")
 
 class SearchBar(Resource):
     def get(self):
