@@ -53,7 +53,7 @@ def index():
    i = FilterTableSearchInterface(CONNECTION_STRING)
    d = request.args
    query = i.filter(request.args)
-   print(query)
+
    if current_user.is_authenticated:
       j = True
    else:
