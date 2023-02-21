@@ -157,6 +157,7 @@ class FilterTableSearchInterface(TableSearchInterface):
                 l = self.get_ssd()
             elif request_args['part'] == "Alimentatore":
                 l = self.get_alim()
+            l = list(map(lambda x : {"name" : x["name"], "type" : request_args['part'],  "price" : x["price"]}, l))
 
         if 'priceMin' in keys:
             print(request_args['priceMin'])

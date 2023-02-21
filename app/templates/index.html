@@ -4,7 +4,6 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
-      <script type = "text/javascript" src = "{{ url_for('static', filename = 'hello.js') }}" ></script>
          <link rel="stylesheet" href="/static/css/style.css">
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -214,8 +213,10 @@
          }
 
          function addItem(data) {
+            console.log(data)
             
             type = data.attributes[1].nodeValue;
+            console.log(type)
             price = data.attributes[2].nodeValue;
             typeprice = type + "-price";
             name = data.id;
