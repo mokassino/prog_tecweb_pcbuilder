@@ -78,6 +78,7 @@
                            <option value="GPU">GPU</option>
                            <option value="RAM">RAM</option>
                            <option value="SSD">SSD</option>
+                           <option value="Alimentatore">Alimentatore</option>
                         </select>
                      </div>
 
@@ -121,6 +122,11 @@
                            <td id="SSD" class="choosen-item-single">Scegli una SSD</td> 
                            <td id="SSD-price">€</td>
                            <td id="SSD-remove" label="SSD" onclick="removeItem(this)" class="remove">x</td>
+                        </tr>
+                        <tr>
+                           <td id="Alimentatore" class="choosen-item-single">Scegli un Alimentatore</td> 
+                           <td id="Alimentatore-price">€</td>
+                           <td id="Alimentatore-remove" label="Alimentatore" onclick="removeItem(this)" class="remove">x</td>
                         </tr>
                      </tbody>
                      </table>
@@ -171,7 +177,7 @@
 
 
       <script>
-         var parts = ["CPU", "GPU", "Scheda Madre", "RAM", "SSD"];
+         var parts = ["CPU", "GPU", "Scheda Madre", "RAM", "SSD", "Alimentatore"];
          function saveBuild() {
             href = "/save-build?"
             // Given the array of components names

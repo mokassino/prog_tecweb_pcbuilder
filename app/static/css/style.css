@@ -349,6 +349,21 @@
   .build-list-item {
     position: relative;
     margin-top: 5vh;
+    background-color: rgba(195, 195, 195, 0.842);
+    border: 3px solid rgb(202, 108, 0);
+
+  }
+
+  .build-list-item a {
+    color: black;
+  }
+
+  .build-list-item:hover {
+    background-color: rgb(202, 108, 0);
+  }
+
+  .build-list-item:hover a {
+    color: white;
   }
 
 .table-yourbuild-body tr:nth-child(odd) {
@@ -382,11 +397,12 @@
 }
 
 .delete-build-button {
-  position: absolute;
+  position: relative;
   color: black;
   background-color: rgba(195, 195, 195, 0.491);
   border: solid 4px rgb(202, 108, 0);
   margin-top: 2vh;
+  margin-right: 3vw;
   text-align: center;
   font-size: 26px;
   left: 15%;

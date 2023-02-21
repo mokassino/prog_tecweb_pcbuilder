@@ -20,7 +20,7 @@
                     <td></td>
                     <td>Componente</td>
                     <td>Prezzo €</td>
-                    <td>URL</td>
+                    <td>Link</td>
                 </tr>
             </thead>
             <tbody class="table-yourbuild-body">
@@ -35,9 +35,12 @@
             </tbody>
          </table>
 
-         <div>
+         {% if logged == True %}
+         <div style="display: flex;">
             <a class="delete-build-button" href="/delete-build?q={{ url }}">Elimina build</a>
+            <a class="delete-build-button" href="/">Torna alla Home</a>
          </div>
+         {% endif %}
 
          <footer class="footer">
             <div class="container">
