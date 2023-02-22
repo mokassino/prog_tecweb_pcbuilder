@@ -57,14 +57,19 @@ class SearchBarInterface(PymongoInterface): #sub class of PymongoInterface
         collection = self.get_db().ssd
         return self.searchbar_query(collection, q)
     
+    def get_alim(self, q=None):
+        collection = self.get_db().alim 
+        return self.searchbar_query(collection, q)
+    
     def get_everything(self, q=None):        
         gpu = self.get_gpu(q)
         cpu = self.get_cpu(q)
         mb = self.get_motherboard(q)
         ram = self.get_ram(q)
         ssd = self.get_ssd(q)
+        alim = self.get_alim(q)
 
-        l = list(gpu + cpu + mb + ram + ssd)
+        l = list(gpu + cpu + mb + ram + ssd + alim)
         return l
     
 
@@ -111,6 +116,10 @@ class TableSearchInterface(PymongoInterface):
         collection = self.get_db().ssd
 
         return self.searchbar_query(collection, q)
+
+    def get_alim(self, q=None):
+        collection = self.get_db().alim 
+        return self.searchbar_query(collection, q)
     
     def get_everything_buf(self, q=None):
         # REFACTORING REQUIRED !!
@@ -119,14 +128,16 @@ class TableSearchInterface(PymongoInterface):
         mb = self.get_motherboard(q)
         ram = self.get_ram(q)
         ssd = self.get_ssd(q)
+        alim = self.get_alim(q)
 
         gpu = list(map(lambda x : {"name" : x["name"], "type" : "GPU", "price" : x["price"]}, gpu))
         cpu = list(map(lambda x : {"name" : x["name"], "type" : "CPU",  "price" : x["price"]}, cpu))
         mb = list(map(lambda x : {"name" : x["name"], "type" : "Scheda Madre",  "price" : x["price"]}, mb))
         ram = list(map(lambda x : {"name" : x["name"], "type" : "RAM",  "price" : x["price"]}, ram))
         ssd = list(map(lambda x : {"name" : x["name"], "type" : "SSD",  "price" : x["price"]}, ssd))
+        alim = list(map(lambda x : {"name" : x["name"], "type" : "Alimentatore",  "price" : x["price"]}, alim))
 
-        return list(cpu+gpu+mb+ram+ssd)
+        return list(cpu+gpu+mb+ram+ssd+alim)
 
 class FilterTableSearchInterface(TableSearchInterface):
     def filter(self, request_args):
@@ -144,6 +155,9 @@ class FilterTableSearchInterface(TableSearchInterface):
                 l = self.get_ram()
             elif request_args['part'] == "SSD":
                 l = self.get_ssd()
+            elif request_args['part'] == "Alimentatore":
+                l = self.get_alim()
+            l = list(map(lambda x : {"name" : x["name"], "type" : request_args['part'],  "price" : x["price"]}, l))
 
         if 'priceMin' in keys:
             print(request_args['priceMin'])
@@ -193,7 +207,7 @@ class SaveBuildInterface(PymongoInterface):
             url = sha256(url.encode('utf-8')).hexdigest()[0:16]
 
             doc = {**doc, **{"url" : url}}
-            parts = ("Scheda Madre", "CPU", "GPU", "RAM", "SSD")
+            parts = ("Scheda Madre", "CPU", "GPU", "RAM", "SSD", "Alimentatore")
 
             for part in parts:
                 try:

@@ -17,20 +17,20 @@ from flask_login import (
 
 import requests
 import json
-import sqlite3
-import os
 from controller.pymongo_interface import SearchBarInterface, FilterTableSearchInterface, SaveBuildInterface
-import controller.db
 from controller.user import User
 from flask_restful import Resource,Api, request
 from oauthlib.oauth2 import WebApplicationClient
 from flask_talisman import Talisman
 from hashlib import sha256
+import yaml
 
 
-GOOGLE_CLIENT_ID = "499806511986-9666ki8p6vjo8udjecn71qrt5c5oe9p1.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET = "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"
-GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
+config = yaml.safe_load(open("config.yml"))
+GOOGLE_CLIENT_ID = config["google"]["GOOGLE_CLIENT_ID"]
+GOOGLE_CLIENT_SECRET = config["google"]["GOOGLE_CLIENT_SECRET"]
+GOOGLE_DISCOVERY_URL = config["google"]["GOOGLE_DISCOVERY_URL"] 
+CONNECTION_STRING = config["mongodb"]
 
 app = Flask(__name__, instance_relative_config=True)
     
@@ -44,22 +44,14 @@ api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
 app.register_blueprint(bp)
 app.register_blueprint(api_bp)
-app.secret_key = "secrete"
-
-CONNECTION_STRING = "mongodb+srv://pcbuilderdev:pcbuilderdev@pcbuilder-cluster.2hbnofk.mongodb.net/?retryWrites=true&w=majority"
-
-# Naive database setup
-try:
-    controller.db.init_db_command()
-except sqlite3.OperationalError:
-    # Assume it's already been created
-    pass
+app.secret_key = config["secret"]
 
 @app.route("/")
 def index():
    i = FilterTableSearchInterface(CONNECTION_STRING)
    d = request.args
    query = i.filter(request.args)
+
    if current_user.is_authenticated:
       j = True
    else:
@@ -78,14 +70,17 @@ def pc_configuration():
     return render_template("pc-configuration.html", data=l)
 
 @app.route("/saved-builds/<build_id>")
-@login_required
 def saved_build_id(build_id): # render template with data for that build
     sbi = SaveBuildInterface(CONNECTION_STRING)
 
     # Get build by url with every date
-    email = current_user.email
+    try:
+        email = current_user.email
+    except AttributeError as e: #Request wasn't made by a logged user
+        email = None
+
     db = sbi.get_sb()
-    query = {"email" : email, "url" : build_id}
+    query = {"url" : build_id}
     filter = {"_id" : 0, "email" : 0, "url" : 0}
 
     # Pack every name into a list
@@ -94,9 +89,9 @@ def saved_build_id(build_id): # render template with data for that build
     t.pop("name")
 
     # For every value in the dictionary, create another dictionary 
-    # with additional values like price, url to amazon
+    # with additional info for each part like price, amazon link
     db = sbi.get_db()
-    traduction = dict({"Scheda Madre" : "motherboard", "CPU" : "cpu", "GPU" : "gpu", "RAM" : "ram" , "SSD" : "ssd"})
+    traduction = dict({"Scheda Madre" : "motherboard", "CPU" : "cpu", "GPU" : "gpu", "RAM" : "ram" , "SSD" : "ssd", "Alimentatore" : "alim"})
 
     data = list()
 
@@ -108,21 +103,23 @@ def saved_build_id(build_id): # render template with data for that build
         except IndexError as e:
             data.append({"part" : [key, '', '', '']})
 
-    return render_template("saved-build-id.html", data=data, url=build_id)
+    if email == None:
+        return render_template("saved-build-id.html", data=data, url=build_id, logged=False)
+    else:
+        return render_template("saved-build-id.html", data=data, url=build_id, logged=True)
 
 @app.route("/delete-build")
 @login_required
 def delete_saved_build():
     args = request.args
-    if 'q' in args.keys():
-        print(args['q'])
+    if 'q' in args.keys(): # q=ALPHANUMERIC_URL 
         sbi = SaveBuildInterface(CONNECTION_STRING)
-        sbi.delete_build(current_user.email, args['q'] )
-        sbi.close()
+        sbi.delete_build(current_user.email, args['q'] ) # Delete the selected build
+        sbi.close() 
 
     return redirect("/saved-builds")
 
-class SearchBar(Resource):
+class SearchBar(Resource): # Implement RESTful for items in the DB
     def get(self):
       args = request.args
 
@@ -140,7 +137,7 @@ def load_user(user_id):
     return User.get(user_id)
 
 api.add_resource(SearchBar, '/api/search')
-Talisman(app, content_security_policy=False)
+Talisman(app, content_security_policy=False) # Implements HTTPS and Security HEADERS in requests
 
 # Login
 def get_google_provider_cfg():
@@ -167,12 +164,11 @@ def login():
 def callback():
     # Get authorization code Google sent back to you
     code = request.args.get("code")
-    print(code)
 
     google_provider_cfg = get_google_provider_cfg()
     token_endpoint = google_provider_cfg["token_endpoint"]
 
-    # Prepare and send a request to get tokens! Yay tokens!
+    # Prepare and send a request to get tokens
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
@@ -186,7 +182,7 @@ def callback():
         auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
     )
 
-    # Parse the tokens!
+    # Parse the tokens
     client.parse_request_body_response(json.dumps(token_response.json()))
 
     # Now that you have tokens (yay) let's find and hit the URL
@@ -197,7 +193,6 @@ def callback():
     userinfo_response = requests.get(uri, headers=headers, data=body)
 
     result = token_response.text
-    print(result)
 
     # You want to make sure their email is verified.
     # The user authenticated with Google, authorized your
@@ -219,8 +214,7 @@ def callback():
         User.create(unique_id, users_name, users_email, picture)
 
     # Begin user session by logging the user in
-
-    unique_id = userinfo_response.json()["sub"]    
+    unique_id = userinfo_response.json()["sub"]
     login_user(user)
 
     # Send user back to homepage
@@ -252,6 +246,6 @@ def save_build():
 
     return redirect(url_for("index"))
 
+#if __name__ == "__main__":
+#     app.run(host="0.0.0.0", port=8000)
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, ssl_context="adhoc")

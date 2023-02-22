@@ -1,0 +1,6 @@
+google:
+    GOOGLE_CLIENT_ID: ""
+    GOOGLE_CLIENT_SECRET: ""
+    GOOGLE_DISCOVERY_URL: ""
+mongodb: ""
+secret: "PLEASE_CHANGE_ME"

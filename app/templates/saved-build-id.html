@@ -20,7 +20,7 @@
                     <td></td>
                     <td>Componente</td>
                     <td>Prezzo €</td>
-                    <td>URL</td>
+                    <td>Link</td>
                 </tr>
             </thead>
             <tbody class="table-yourbuild-body">
@@ -28,16 +28,25 @@
                 <tr>
                     <td class="yourbuild-first-column"> {{ item["part"][0] }} </td>
                     <td> {{ item["part"][1] }} </td>
-                    <td> {{ item["part"][2]["$numberInt"] }} </td>
+                    <td class="price"> {{ item["part"][2]["$numberInt"] }} </td>
                     <td> <a style="color:black" href="{{ item['part'][3] }}" >  <i class="fa-brands fa-amazon"> </i></a> </td>
                 </tr>
                 {% endfor %}
             </tbody>
          </table>
 
-         <div>
+         {% if logged == True %}
+         <div style="display: flex;">
             <a class="delete-build-button" href="/delete-build?q={{ url }}">Elimina build</a>
+            <a class="delete-build-button" href="/">Torna alla Home</a>
+            <a class="delete-build-button" id="total" href="#">Totale </a>
          </div>
+         {% else %}
+         <div style="display: flex;">
+            <a class="delete-build-button" id="total" href="#">Totale </a>
+         </div>
+         {% endif %}
+
 
          <footer class="footer">
             <div class="container">
@@ -45,5 +54,22 @@
             </div>
          </footer>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            prices = document.getElementsByClassName("price");
+            console.log(prices);
+            let sum = 0;
+            for (i=0; i < prices.length; i++){
+                price = prices[i].innerHTML;
+                sum = sum + parseInt(price);
+            }
+
+            total = document.getElementById("total");
+            total.innerHTML = "Totale: " + sum + " €"
+
+         });
+
+    </script>
 </body>
 </html>
