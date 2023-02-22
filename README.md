@@ -14,3 +14,11 @@ This project has been made for the university course of TECWEB (Web Technologies
 - Create a virtual env and install requirements with `pip install -r app/requirements.txt`
 - Execute the script `app/run.sh` (if you're on linux)
 - Go to https://localhost:8000 and your app should be on
+
+### With Docker
+- Register you application as client to Google here https://console.cloud.google.com/apis/credentials
+- Edit config.yml and insert the appropiate secrets (see previous section)
+- Generate a self signed certificate with `openssl req -x509 -nodes -days 3650 -newkey ec:<(openssl ecparam -name prime256v1) -keyout private_key.pem -out certificate.pem` and copy them inside `app/`
+- `docker build . --tag=pcbuilder`
+- `docker build -p 8000:8000 run pcbuilder`
+- The webapp needs HTTPS encryption, it has been tested with `Nginx` as reverse-proxy and a certificate got with `certbot`
